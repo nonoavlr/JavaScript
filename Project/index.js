@@ -1,10 +1,13 @@
 let addListCart = []
 
-const button = document.querySelectorAll('.action-buttons');
+const buttonAddCart = document.querySelectorAll('button[data-price]');
 const listCart = document.querySelector('#lista-carrinho');
 const templateElement = document.querySelector('#carrinho-item');
 const template = templateElement.innerHTML;
 const listaElement = document.querySelector('#lista-produtos');
+const total = document.querySelector('#total');
+const buttonRemove = document.querySelectorAll('ul button[class = remover-item]')
+let saldo
 
 const storageHandler = {
   key: 'items',
@@ -28,13 +31,17 @@ function ItemList(id, name, image, price, qtd){
   this.qtd = qtd;
 };
 
+
 const render = () => {
-  console.log(addListCart[0]);
+
+  listCart.innerHTML = '';
+  saldo = 0;
   for(i = 0; i < addListCart.length; i++){
+    saldo += parseFloat(addListCart[i].price)*parseInt(addListCart[i].qtd);
     const itemsHTML = templateToHTML(addListCart[i], template);
-    console.log(addListCart[0]);
-    listCart.innerHTML = itemsHTML.join('\n');
+    listCart.innerHTML += itemsHTML
   }
+  total.innerHTML = saldo.toFixed(2).replace(".",",").toString()
 };
 
 
@@ -47,27 +54,67 @@ const onClick = (evt) => {
     const qtd = parseInt(evt.target.attributes['data-quantity'].value);
     
     const newItemCart = new ItemList(id, name, image, price, qtd)
-    addListCart.push(newItemCart);
+    let contem = false;
+    let ref = 0
+
+    for(i = 0; i < addListCart.length; i++){
+        if(addListCart[i].id == newItemCart.id){
+          contem = true;
+          ref = i;
+        }
+    }
+    
+    if(contem){
+      addMore(newItemCart.id, ref)
+    }else{
+      addListCart.push(newItemCart);
+    }
+    init();
   }
 }
 
+const addMore = (id, ref) => {
+  let analise = addListCart[ref].qtd + 1
+  addListCart[ref].qtd = analise;
+  init();
+};
 
-const templateToHTML = (obj, template) => {
-  console.log(obj.name)
-  return template
-    .replaceAll('{{NOME}}', obj.name.value)
-    .replaceAll('{{PRECO}}', obj.price)
-    .replaceAll('{{ID}}', obj.id)
-    .replaceAll('{{IMAGEM}}', obj.image)
-    .replaceAll('{{QUANTIDADE}}', obj.qtd)
+const RemoveClick = (evt) => {
+  console.log('primeiro passo')
+  if (evt.target.nodeName === 'BUTTON'){
+    console.log('primeiro passo')
+    const index = parseInt(evt.target.attributes['data-id'].nodeValue);
+    console.log(index)
+    render()
+  }
 };
 
 
+const templateToHTML = (obj, template) => {
+    return template
+    .replace(/{{NOME}}/g, obj.name)
+    .replace(/{{PRECO}}/g, obj.price)
+    .replace(/{{ID}}/g, obj.id)
+    .replace(/{{IMAGEM}}/g, obj.image)
+    .replace(/{{QUANTIDADE}}/g, obj.qtd)
+};
+
+const testekk = (evt) => {
+  if(evt) console.log(passou)
+}
+
 const init = () => {
-  addListCart = storageHandler.getItems();
-  for (var i = 0; i < button.length; i++){
-  button[i].addEventListener("click", onClick)};
-  render();
+
+  for (var i = 0; i < buttonAddCart.length; i++){
+  buttonAddCart[i].addEventListener("click", onClick)};
+
+  for (var i = 0; i < buttonRemove.length; i++){
+    buttonRemove[i].addEventListener("clicks", testekk)
+  console.log(buttonRemove[i])}
+  console.log('end')
+
+  render()
+  
 };
 
 init();
