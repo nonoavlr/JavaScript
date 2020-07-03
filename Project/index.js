@@ -80,12 +80,11 @@ const addMore = (id, ref) => {
 };
 
 const RemoveClick = (evt) => {
-  console.log('primeiro passo')
-  if (evt.target.nodeName === 'BUTTON'){
-    console.log('primeiro passo')
+  if(evt.target.nodeName === 'BUTTON' && evt.target.attributes['class'].nodeValue === 'remover-item'){
     const index = parseInt(evt.target.attributes['data-id'].nodeValue);
-    console.log(index)
-    render()
+    const test = addListCart.filter((num) => {return num.id !== index})
+    addListCart = test
+    init()
   }
 };
 
@@ -99,8 +98,11 @@ const templateToHTML = (obj, template) => {
     .replace(/{{QUANTIDADE}}/g, obj.qtd)
 };
 
-const testekk = (evt) => {
-  if(evt) console.log(passou)
+const Quantid = (evt) => {
+
+  if(evt.target.nodeName === 'INPUT' && evt.target.attributes['class'].nodeValue === 'qtd'){
+
+  }
 }
 
 const init = () => {
@@ -108,10 +110,9 @@ const init = () => {
   for (var i = 0; i < buttonAddCart.length; i++){
   buttonAddCart[i].addEventListener("click", onClick)};
 
-  for (var i = 0; i < buttonRemove.length; i++){
-    buttonRemove[i].addEventListener("clicks", testekk)
-  console.log(buttonRemove[i])}
-  console.log('end')
+  listCart.addEventListener('click', RemoveClick)
+  listCart.addEventListener('click', Quantid)
+  
 
   render()
   
