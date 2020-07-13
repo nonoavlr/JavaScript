@@ -6,8 +6,8 @@ const templateElement = document.querySelector('#carrinho-item');
 const template = templateElement.innerHTML;
 const listaElement = document.querySelector('#lista-produtos');
 const total = document.querySelector('#total');
-const buttonRemove = document.querySelectorAll('ul button[class = remover-item]')
-let saldo
+const buttonRemove = document.querySelectorAll('ul button[class = remover-item]');
+let saldo;
 
 const storageHandler = {
   key: 'items',
@@ -23,12 +23,14 @@ const storageHandler = {
 
 
 //Objetos
-function ItemList(id, name, image, price, qtd){
-  this.id = id;
-  this.name = name;
-  this.image = image;
-  this.price = price;
-  this.qtd = qtd;
+class ItemList{
+  constructor(id, name, image, price, qtd){
+    this.id = id;
+    this.name = name;
+    this.image = image;
+    this.price = price;
+    this.qtd = qtd;
+  }
 };
 
 
@@ -69,14 +71,14 @@ const onClick = (evt) => {
     }else{
       addListCart.push(newItemCart);
     }
-    init();
+    render();
   }
 }
 
 const addMore = (id, ref) => {
   let analise = addListCart[ref].qtd + 1
   addListCart[ref].qtd = analise;
-  init();
+  render();
 };
 
 const RemoveClick = (evt) => {
@@ -84,7 +86,7 @@ const RemoveClick = (evt) => {
     const index = parseInt(evt.target.attributes['data-id'].nodeValue);
     const test = addListCart.filter((num) => {return num.id !== index})
     addListCart = test
-    init()
+    render()
   }
 };
 
@@ -101,21 +103,22 @@ const templateToHTML = (obj, template) => {
 const Quantid = (evt) => {
 
   if(evt.target.nodeName === 'INPUT' && evt.target.attributes['class'].nodeValue === 'qtd'){
-
+    const id = evt.target.getAttribute('data-id');  
+    for(index in addListCart){ //percorre as chaves
+      if(parseInt(addListCart[index].id) == parseInt(id)){
+        addListCart[index].qtd = parseInt(evt.target.value);
+      }
+    }
+    console.log(addListCart);
+    render();
   }
 }
 
 const init = () => {
-
-  for (var i = 0; i < buttonAddCart.length; i++){
-  buttonAddCart[i].addEventListener("click", onClick)};
-
-  listCart.addEventListener('click', RemoveClick)
-  listCart.addEventListener('click', Quantid)
-  
-
+  listaElement.addEventListener('click', onClick);
+  listCart.addEventListener('click', RemoveClick);
+  listCart.addEventListener('click', Quantid);
   render()
-  
 };
 
 init();
